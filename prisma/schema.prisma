@@ -1,0 +1,295 @@
+// This is your Prisma schema file for the Prabha Enterprise ERP & CMS
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+// USER & ROLE MANAGEMENT
+// -----------------------------------------------------------------------------
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  CONTENT_MANAGER
+  INVENTORY_MANAGER
+  SALES_REP
+  ARCHITECT_SUPPORT
+  DEALER_MANAGER
+  ARCHITECT
+  DEALER
+  CUSTOMER
+}
+
+model User {
+  id            String    @id @default(cuid()) // Clerk User ID
+  email         String    @unique
+  firstName     String?
+  lastName      String?
+  phone         String?
+  role          Role      @default(CUSTOMER)
+  companyName   String?   // For Architects and Dealers
+  gstNumber     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  orders        Order[]
+  addresses     Address[]
+  quotations    Quotation[]
+  invoices      Invoice[]
+  appointments  Appointment[]
+  supportTickets SupportTicket[]
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title      String   // e.g., "Home", "Site 1"
+  line1      String
+  line2      String?
+  city       String
+  state      String
+  postalCode String
+  country    String   @default("India")
+  isDefault  Boolean  @default(false)
+}
+
+// -----------------------------------------------------------------------------
+// PRODUCT INFORMATION MANAGEMENT (PIM)
+// -----------------------------------------------------------------------------
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  parentId    String?
+  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  products    Product[]
+}
+
+model Product {
+  id               String   @id @default(cuid())
+  name             String
+  slug             String   @unique
+  sku              String   @unique
+  categoryId       String
+  category         Category @relation(fields: [categoryId], references: [id])
+  brand            String
+  description      String   @db.Text
+  shortDescription String?
+  
+  // Pricing
+  basePrice        Float
+  mrp              Float
+  dealerPrice      Float?
+  architectPrice   Float?
+  
+  // Tax & Compliance
+  hsnCode          String
+  gstRate          Float    @default(18.0) // Percentage
+  
+  // Attributes
+  material         String?
+  finish           String?
+  dimensions       String?
+  weight           Float?
+  warranty         String?
+  
+  // Media
+  images           String[]
+  model3dUrl       String?  // GLB/USDZ URL
+  
+  // Status
+  isPublished      Boolean  @default(false)
+  isFeatured       Boolean  @default(false)
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  inventory        Inventory[]
+  orderItems       OrderItem[]
+  invoiceItems     InvoiceItem[]
+}
+
+// -----------------------------------------------------------------------------
+// INVENTORY & WAREHOUSE
+// -----------------------------------------------------------------------------
+model Warehouse {
+  id        String   @id @default(cuid())
+  name      String
+  location  String
+  inventory Inventory[]
+}
+
+model Inventory {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  warehouseId String
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  quantity    Int      @default(0)
+  reserved    Int      @default(0)
+  
+  @@unique([productId, warehouseId])
+}
+
+// -----------------------------------------------------------------------------
+// ORDER TO CASH (O2C) & INVOICING
+// -----------------------------------------------------------------------------
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  orderNumber   String   @unique
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  status        OrderStatus @default(PENDING)
+  totalAmount   Float
+  taxAmount     Float
+  shippingAmount Float
+  
+  shippingAddress String @db.Text
+  billingAddress  String @db.Text
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  items         OrderItem[]
+  invoices      Invoice[]
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+  tax       Float
+}
+
+enum InvoiceType {
+  TAX_INVOICE
+  RETAIL_INVOICE
+  PROFORMA
+  CREDIT_NOTE
+}
+
+model Invoice {
+  id          String   @id @default(cuid())
+  invoiceNo   String   @unique
+  type        InvoiceType @default(TAX_INVOICE)
+  orderId     String?
+  order       Order?   @relation(fields: [orderId], references: [id])
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  
+  subtotal    Float
+  cgst        Float
+  sgst        Float
+  igst        Float
+  total       Float
+  
+  status      String   @default("UNPAID") // UNPAID, PAID, VOID
+  
+  createdAt   DateTime @default(now())
+  issuedAt    DateTime?
+  dueDate     DateTime?
+
+  items       InvoiceItem[]
+  payments    Payment[]
+}
+
+model InvoiceItem {
+  id        String   @id @default(cuid())
+  invoiceId String
+  invoice   Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  rate      Float
+  amount    Float
+}
+
+model Payment {
+  id            String   @id @default(cuid())
+  invoiceId     String
+  invoice       Invoice  @relation(fields: [invoiceId], references: [id])
+  amount        Float
+  method        String   // UPI, CARD, BANK_TRANSFER, CASH
+  referenceId   String?
+  status        String   @default("SUCCESS")
+  createdAt     DateTime @default(now())
+}
+
+// -----------------------------------------------------------------------------
+// QUOTATIONS
+// -----------------------------------------------------------------------------
+model Quotation {
+  id            String   @id @default(cuid())
+  quoteNumber   String   @unique
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  totalAmount   Float
+  validUntil    DateTime
+  status        String   @default("DRAFT") // DRAFT, SENT, ACCEPTED, REJECTED
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+// APPOINTMENTS & SUPPORT
+// -----------------------------------------------------------------------------
+model Appointment {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  type        String   // STORE_VISIT, VIDEO_CALL, SITE_VISIT
+  date        DateTime
+  status      String   @default("SCHEDULED")
+  notes       String?  @db.Text
+  createdAt   DateTime @default(now())
+}
+
+model SupportTicket {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  subject     String
+  message     String   @db.Text
+  status      String   @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+// CONTENT MANAGEMENT (CMS)
+// -----------------------------------------------------------------------------
+model Page {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String   @db.Text // JSON string containing blocks
+  isPublished Boolean  @default(false)
+  metaTitle   String?
+  metaDesc    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

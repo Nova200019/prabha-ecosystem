@@ -71,18 +71,22 @@ const jsonLd = {
 import { CartProvider } from "@/components/cart/CartContext";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
 
+import { ClerkProvider } from '@clerk/nextjs'
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
-      <head>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      </head>
-      <body className={`${inter.className} bg-bg text-text-primary antialiased`}>
-        <CartProvider>
-          {children}
-          <WhatsAppButton />
-        </CartProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" className={inter.variable}>
+        <head>
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        </head>
+        <body className={`${inter.className} bg-bg text-text-primary antialiased`}>
+          <CartProvider>
+            {children}
+            <WhatsAppButton />
+          </CartProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
