@@ -11,10 +11,29 @@ const TileExplodedInner = dynamic(
   { ssr: false }
 );
 
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Environment } from '@react-three/drei';
+
 export function FaucetModelWrapper() {
-  return <FaucetModelInner />;
+  return (
+    <div className="w-full h-[400px]">
+      <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+        <Environment preset="studio" />
+        <OrbitControls enableZoom={false} autoRotate />
+        <FaucetModelInner />
+      </Canvas>
+    </div>
+  );
 }
 
 export function TileExplodedWrapper() {
-  return <TileExplodedInner inView={true} />;
+  return (
+    <div className="w-full h-[400px]">
+      <Canvas camera={{ position: [0, 2, 5], fov: 45 }}>
+        <Environment preset="studio" />
+        <OrbitControls enableZoom={false} />
+        <TileExplodedInner inView={true} />
+      </Canvas>
+    </div>
+  );
 }
