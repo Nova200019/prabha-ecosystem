@@ -12,8 +12,8 @@ export default function LuxuryShowcase() {
         <div className="grid grid-cols-1 lg:grid-cols-2">
           <div className="relative h-[50vh] lg:h-[80vh] w-full order-1 lg:order-1">
             <Image
-              src="/showcase-tiles.jpg"
-              alt="Premium Tiles"
+              src="/images/marble-collection.jpg"
+              alt="Premium Spanish Ceramic Tiles"
               fill
               className="object-cover"
             />
@@ -50,8 +50,8 @@ export default function LuxuryShowcase() {
           </div>
           <div className="relative h-[50vh] lg:h-[80vh] w-full order-1 lg:order-2">
             <Image
-              src="/showcase-sanitary.jpg"
-              alt="Premium Sanitaryware"
+              src="/images/luxury-shower.jpg"
+              alt="Jaquar Premium Sanitaryware"
               fill
               className="object-cover"
             />

@@ -11,7 +11,7 @@ import SmoothScroll from '@/components/layout/SmoothScroll';
 import dynamic from 'next/dynamic';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 
-import { FaucetModelWrapper, TileExplodedWrapper } from '@/components/3d/Wrappers';
+import { FaucetModelWrapper, TileExplodedWrapper, ShowerSceneWrapper } from '@/components/3d/Wrappers';
 
 export default function Home() {
   return (
@@ -19,6 +19,25 @@ export default function Home() {
       <Navigation />
       <main className="min-h-screen">
         <HeroSection />
+
+        {/* Ultra Luxury Shower 3D Showcase */}
+        <section className="h-screen w-full relative bg-[#020202]">
+          <div className="absolute inset-0 z-0">
+            <ShowerSceneWrapper />
+          </div>
+          <div className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-center px-6 md:px-12 lg:px-24">
+            <div className="max-w-7xl mx-auto w-full">
+              <ScrollReveal direction="up">
+                <h2 className="text-5xl md:text-7xl font-light text-white tracking-tight mb-4 drop-shadow-2xl">
+                  Immersive <span className="text-gold italic">Luxury</span>
+                </h2>
+                <p className="text-xl md:text-2xl text-white/80 font-light max-w-xl drop-shadow-lg">
+                  Step into an experience. Drag to explore the anatomy of perfect water flow in real-time 3D.
+                </p>
+              </ScrollReveal>
+            </div>
+          </div>
+        </section>
         
         <BrandStory />
         

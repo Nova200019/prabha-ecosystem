@@ -24,7 +24,7 @@ export default function BrandStory() {
         <ScrollReveal direction="right" className="relative h-[500px] lg:h-[700px] w-full rounded-2xl overflow-hidden">
           <motion.div style={{ y, scale }} className="absolute inset-0 w-full h-[120%] -top-[10%]">
             <Image
-              src="/hero-bathroom.jpg"
+              src="/images/hero-bathroom.jpg"
               alt="Luxurious bathroom setting by Prabha"
               fill
               className="object-cover"
