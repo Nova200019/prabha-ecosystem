@@ -9,8 +9,8 @@ export default function NotFound() {
           404
         </h1>
         <h2 className="text-2xl md:text-3xl text-white font-medium mb-4">Lost in the showroom?</h2>
-        <p className="text-text-secondary max-w-md mx-auto mb-10">
-          The page you are looking for doesn't exist or has been moved. Let's get you back to exploring our collections.
+        <p className="text-xl md:text-2xl text-text-secondary mb-12 max-w-2xl mx-auto">
+          We can&apos;t seem to find the page you&apos;re looking for. It might have been moved or no longer exists.
         </p>
         <Link href="/">
           <Button variant="primary">Return Home</Button>
