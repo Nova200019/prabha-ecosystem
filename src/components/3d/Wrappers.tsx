@@ -45,8 +45,9 @@ export function TileExplodedWrapper() {
 
 export function ShowerSceneWrapper() {
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full cursor-grab active:cursor-grabbing">
       <Canvas camera={{ position: [0, 1.5, 5], fov: 50 }}>
+        <OrbitControls enableZoom={false} maxPolarAngle={Math.PI / 2} minPolarAngle={0} autoRotate autoRotateSpeed={0.5} />
         <ShowerSceneInner />
       </Canvas>
     </div>
