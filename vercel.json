@@ -1,8 +1,5 @@
 {
   "version": 2,
-  "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "installCommand": "npm ci --omit=dev",
   "outputDirectory": ".next",
   "headers": [
     {
