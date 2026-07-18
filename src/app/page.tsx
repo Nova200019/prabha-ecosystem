@@ -1,65 +1,70 @@
-import Image from "next/image";
+import HeroSection from '@/components/hero/HeroSection';
+import FeaturedCollections from '@/components/sections/FeaturedCollections';
+import LuxuryShowcase from '@/components/sections/LuxuryShowcase';
+import BrandStory from '@/components/sections/BrandStory';
+import StatsSection from '@/components/sections/StatsSection';
+import TestimonialsSection from '@/components/sections/TestimonialsSection';
+import CTASection from '@/components/sections/CTASection';
+import Navigation from '@/components/layout/Navigation';
+import Footer from '@/components/layout/Footer';
+import SmoothScroll from '@/components/layout/SmoothScroll';
+import dynamic from 'next/dynamic';
+import ScrollReveal from '@/components/ui/ScrollReveal';
+
+import { FaucetModelWrapper, TileExplodedWrapper } from '@/components/3d/Wrappers';
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <SmoothScroll>
+      <Navigation />
+      <main className="min-h-screen">
+        <HeroSection />
+        
+        <BrandStory />
+        
+        <FeaturedCollections />
+        
+        <LuxuryShowcase />
+
+        {/* 3D Engineering Showcase Section */}
+        <section className="py-24 md:py-32 bg-bg-secondary relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 mb-16 relative z-10">
+            <ScrollReveal>
+              <h2 className="text-4xl md:text-5xl font-light tracking-tight text-white mb-6">
+                Engineered for <span className="text-gold italic">Perfection</span>
+              </h2>
+              <p className="text-text-secondary max-w-2xl text-lg font-light leading-relaxed">
+                Experience our premium products in interactive 3D. Inspect every detail, from the flawless chrome finishes to the internal ceramic cartridges.
+              </p>
+            </ScrollReveal>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-6 max-w-[1400px] mx-auto">
+            <div className="h-[500px] md:h-[600px] rounded-2xl overflow-hidden glass border border-white/5 relative">
+              <div className="absolute top-6 left-6 z-10">
+                <h3 className="text-xl text-white font-light tracking-wide">Single Lever Mixer</h3>
+                <p className="text-sm text-text-tertiary">Interactive Exploded View</p>
+              </div>
+              <FaucetModelWrapper />
+            </div>
+            
+            <div className="h-[500px] md:h-[600px] rounded-2xl overflow-hidden glass border border-white/5 relative">
+              <div className="absolute top-6 left-6 z-10">
+                <h3 className="text-xl text-white font-light tracking-wide">Porcelain Slab</h3>
+                <p className="text-sm text-text-tertiary">Material Composition</p>
+              </div>
+              <TileExplodedWrapper />
+            </div>
+          </div>
+        </section>
+
+        <StatsSection />
+        
+        <TestimonialsSection />
+        
+        <CTASection />
       </main>
-    </div>
+      <Footer />
+    </SmoothScroll>
   );
 }
